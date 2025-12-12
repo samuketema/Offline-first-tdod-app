@@ -19,7 +19,7 @@ class AuthRemoteRepository {
         body: jsonEncode({"name": name, "email": email, "password": password}),
       );
 
-      if (res.statusCode != 201) {
+      if (res.statusCode != 201) { 
         throw jsonDecode(res.body)['error'];
       }
       return UserModel.fromJson(res.body);
@@ -41,7 +41,7 @@ class AuthRemoteRepository {
 
       if (res.statusCode != 200) {
         throw jsonDecode(res.body)['error'];
-      }
+      } 
       return UserModel.fromJson(res.body);
     } catch (e) {
       throw e.toString();
@@ -64,16 +64,18 @@ class AuthRemoteRepository {
       }
 
       final userResponce = await http.get(
-        Uri.parse('${Constants.backendUrl}/auth/tokenIsValid'),
-        headers: {"Content-Type": "application/json", "x-auth-token": token},
+        Uri.parse('${Constants.backendUrl}/auth'),
+        headers: {"Content  -Type": "application/json", "x-auth-token": token},
       );
+      print(userResponce.body);
+
       if (userResponce.statusCode != 200 )  {
          throw jsonDecode(userResponce.body)['error'];
       }
 
       return UserModel.fromJson(userResponce.body); 
     } catch (e) {
-      return null;
+      return null; 
     }
   }
 }
