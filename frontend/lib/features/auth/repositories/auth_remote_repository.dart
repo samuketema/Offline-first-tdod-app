@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:taskapp/core/services/sp_service.dart';
+import 'package:taskapp/features/auth/repositories/auth_local_repository.dart';
 import 'package:taskapp/models/user_model.dart';
 import '../../../core/constants/constants.dart';
 
 class AuthRemoteRepository {
   final spService = SpService();
+  final authLocalRepository = AuthLocalRepository();
   Future<UserModel> signUp({
     required String name,
     required String email,
@@ -75,7 +77,8 @@ class AuthRemoteRepository {
 
       return UserModel.fromJson(userResponce.body); 
     } catch (e) {
-      return null; 
+      final user = await authLocalRepository.getUser();
+      return user; 
     }
   }
 }

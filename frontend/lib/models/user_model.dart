@@ -4,6 +4,7 @@ import 'dart:convert';
 class UserModel {
   final String id;
   final String name;
+  final String email;     
   final String password;
   final String? token;
   final DateTime createdAt;
@@ -12,6 +13,7 @@ class UserModel {
   UserModel({
     required this.id,
     required this.name,
+    required this.email, 
     required this.password,
     required this.token,
     required this.createdAt,
@@ -21,6 +23,7 @@ class UserModel {
   UserModel copyWith({
     String? id,
     String? name,
+    String? email,           
     String? password,
     String? token,
     DateTime? createdAt,
@@ -29,6 +32,7 @@ class UserModel {
     return UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
+      email: email ?? this.email,   // ✅ ADDED
       password: password ?? this.password,
       token: token ?? this.token,
       createdAt: createdAt ?? this.createdAt,
@@ -40,6 +44,7 @@ class UserModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'email': email,  
       'password': password,
       'token': token,
       'createdAt': createdAt.millisecondsSinceEpoch,
@@ -48,45 +53,31 @@ class UserModel {
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
-      id: map['id'] ?? '',
-      name: map['name'] ?? "", 
-      password: map['password']?? '',
-      token: map['token'] ,
-      createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
-    );
+    DateTime _parseDate(dynamic value) {
+  if (value is int) {
+    return DateTime.fromMillisecondsSinceEpoch(value);
   }
+  if (value is String) {
+    return DateTime.parse(value);
+  }
+  throw Exception("Invalid date format: $value");
+}
+
+  return UserModel(
+    id: map['id'] ?? '',
+    name: map['name'] ?? "",
+    email: map['email'] ?? "",
+    password: map['password'] ?? '',
+    token: map['token'],
+    createdAt: _parseDate(map['createdAt']),
+    updatedAt: _parseDate(map['updatedAt']),
+  );
+}
+
+
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'UserModel(id: $id, name: $name, password: $password, token: $token, createdAt: $createdAt, updatedAt: $updatedAt)';
-  }
-
-  @override
-  bool operator ==(covariant UserModel other) {
-    if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.password == password &&
-      other.token == token &&
-      other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-      name.hashCode ^
-      password.hashCode ^
-      token.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode;
-  }
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

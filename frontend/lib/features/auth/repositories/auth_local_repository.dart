@@ -17,7 +17,7 @@ class AuthLocalRepository {
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE $tableName (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id Text PRIMARY KEY,
             name TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
