@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskapp/core/constants/utils.dart';
+import 'package:taskapp/features/auth/widgets/date_selector.dart';
 import 'package:taskapp/features/auth/widgets/taskk_card.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,8 +18,10 @@ class HomePage extends StatelessWidget {
       ),
       body: Column(
         children: [
+           DateSelector(),
           Row(
             children: [ 
+             
               // ✅ Expanded constrains TaskkCard width
               Expanded(
                 child: TaskkCard(
