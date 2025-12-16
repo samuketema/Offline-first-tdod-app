@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:taskapp/core/constants/utils.dart';
@@ -30,7 +29,7 @@ class _DateSelectorState extends State<DateSelector> {
                     weekOffset++;
                   });
                 },
-                icon: Icon(Icons.arrow_back_ios),
+                icon: Icon(Icons.arrow_forward_ios),
               ),
               Text(
                 currentMonth,
@@ -42,7 +41,7 @@ class _DateSelectorState extends State<DateSelector> {
                     weekOffset--;
                   });
                 },
-                icon: Icon(Icons.arrow_forward_ios),
+                icon: Icon(Icons.arrow_back_ios),
               ),
             ],
           ),
@@ -79,7 +78,7 @@ class _DateSelectorState extends State<DateSelector> {
                     Text(
                       DateFormat("EEE").format(date),
                       style:  TextStyle(
-                       color:isSelected ? Colors.white:null,  
+                       color:isSelected ? Colors.white:null,    
                       fontSize: 12),
                     ),
                   ],
