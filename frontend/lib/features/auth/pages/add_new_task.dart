@@ -9,6 +9,8 @@ class AddNewTask extends StatefulWidget {
 }
 
 class _AddNewTaskState extends State<AddNewTask> {
+  TextEditingController titleController = TextEditingController();
+  TextEditingController describtionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,20 @@ class _AddNewTaskState extends State<AddNewTask> {
                });
               }
             },
-            child: Text(DateFormat("MM-D-Y ").format(selectedDate)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(DateFormat("MM-D-Y ").format(selectedDate)),
+            ),
+          )
+        ],
+      ),
+      body: Column(
+        children: [
+          TextFormField(
+            controller:titleController ,
+          ),
+           TextFormField(
+            controller:describtionController ,
           )
         ],
       ),
