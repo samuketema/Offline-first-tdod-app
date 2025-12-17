@@ -26,10 +26,10 @@ class _DateSelectorState extends State<DateSelector> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    weekOffset++;
+                    weekOffset--;
                   });
                 },
-                icon: Icon(Icons.arrow_forward_ios),
+                icon: Icon(Icons.arrow_back_ios),
               ),
               Text(
                 currentMonth,
@@ -38,10 +38,10 @@ class _DateSelectorState extends State<DateSelector> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    weekOffset--;
+                    weekOffset++;
                   });
                 },
-                icon: Icon(Icons.arrow_back_ios),
+                icon: Icon(Icons.arrow_forward_ios),
               ),
             ],
           ),
