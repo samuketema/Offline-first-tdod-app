@@ -1,3 +1,4 @@
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -11,6 +12,7 @@ class AddNewTask extends StatefulWidget {
 class _AddNewTaskState extends State<AddNewTask> {
   TextEditingController titleController = TextEditingController();
   TextEditingController describtionController = TextEditingController();
+  Color selectedColor = const Color.fromRGBO(246, 222, 194, 1);
   DateTime selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class _AddNewTaskState extends State<AddNewTask> {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(DateFormat("MM-D-Y ").format(selectedDate)),
+              child: Text(DateFormat("MM-d-y").format(selectedDate)),
             ),
           )
         ],
@@ -38,10 +40,26 @@ class _AddNewTaskState extends State<AddNewTask> {
         children: [
           TextFormField(
             controller:titleController ,
+            decoration: InputDecoration(
+              hintText: "Title"
+            ),
           ),
+          SizedBox(height: 10,),
            TextFormField(
             controller:describtionController ,
-          )
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: "describtion"
+              
+            ),
+          ) ,
+          ColorPicker(onColorChanged: (Color color){
+            setState(() {
+              selectedColor = color;
+            });
+
+          },
+          pickersEnabled:{ColorPickerType.wheel:true} ,)
         ],
       ),
     );
