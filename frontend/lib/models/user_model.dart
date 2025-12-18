@@ -6,7 +6,7 @@ class UserModel {
   final String name;
   final String email;     
   final String password;
-  final String? token;
+  final String token;
   final DateTime createdAt;
   final DateTime updatedAt;
 
