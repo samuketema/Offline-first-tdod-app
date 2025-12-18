@@ -1,16 +1,16 @@
 import { Router } from "express";
 import { error } from "node:console";
-import { AuthRequest } from "../middleware/auth";
+import { auth, AuthRequest } from "../middleware/auth";
 import { NewTask, tasks } from "../db/schema";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 
 const taskRouter = Router();
 
-taskRouter.post('/task',async (req: AuthRequest,res)=>{
+taskRouter.post("/",auth,async (req: AuthRequest,res)=>{
     try {
-        req.body = {...req.body , uid:req.user};
-        const newTask: NewTask = req.body;
+        req.body = {...req.body ,dueAt: new Date(req.body.dueAt), uid:req.user};
+        const newTask: NewTask = req    .body;
         const [task] = await db.insert(tasks).values(newTask).returning();
         res.status(201).json(task);
     } catch (e) {
@@ -42,7 +42,7 @@ taskRouter.delete("/:id", async (req: AuthRequest, res) => {
 
     // optional: check ownership
 res.json(true);
-  } catch (e) {
+  } catch (e) { 
     console.log(e);
     res.status(500).json({ error: e });
   }
