@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:taskapp/core/constants/utils.dart';
 
 class DateSelector extends StatefulWidget {
-  const DateSelector({super.key});
+  DateTime selectedDate;
+  final Function(DateTime) ontap;
+   DateSelector({super.key, required this.selectedDate, required this.ontap});
 
   @override
   State<DateSelector> createState() => _DateSelectorState();
@@ -53,35 +55,38 @@ class _DateSelectorState extends State<DateSelector> {
             itemCount: weekDates.length,
             itemBuilder: (context, index) {
               final date = weekDates[index];
-              bool isSelected = date.year == selectedDate.year &&
-                  date.month == selectedDate.month &&
-                  date.day == selectedDate.day;
+              bool isSelected = date.year == widget.selectedDate.year &&
+                  date.month == widget.selectedDate.month &&
+                  date.day == widget.selectedDate.day;
 
-              return Container(
-                decoration: BoxDecoration(
-                  border: BoxBorder.all(color: Colors.grey.shade300),
-                  color:isSelected ? Colors.orange:null,
-                ),
-                width: 55,
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      date.day.toString(),
-                      style: TextStyle(
-                        color:isSelected ? Colors.white:null,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              return GestureDetector(
+                onTap:() => widget.ontap(date),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: BoxBorder.all(color: Colors.grey.shade300),
+                    color:isSelected ? Colors.orange:null,
+                  ),
+                  width: 55,
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        date.day.toString(),
+                        style: TextStyle(
+                          color:isSelected ? Colors.white:null,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      DateFormat("EEE").format(date),
-                      style:  TextStyle(
-                       color:isSelected ? Colors.white:null,    
-                      fontSize: 12),
-                    ),
-                  ],
+                      Text(
+                        DateFormat("EEE").format(date),
+                        style:  TextStyle(
+                         color:isSelected ? Colors.white:null,    
+                        fontSize: 12),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
