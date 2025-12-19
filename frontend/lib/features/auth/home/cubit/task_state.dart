@@ -21,3 +21,7 @@ final class TaskFailure extends TaskState {
   final String message;
   const TaskFailure(this.message);
 }
+class TaskFetchSuccess extends TaskState {
+  final List<TaskModel> tasks;
+  TaskFetchSuccess(this.tasks);
+}

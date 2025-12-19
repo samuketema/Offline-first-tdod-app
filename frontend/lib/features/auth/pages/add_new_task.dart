@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:taskapp/features/auth/cubit/auth_cubit.dart';
 import 'package:taskapp/features/auth/home/cubit/task_cubit.dart';
+import 'package:taskapp/features/auth/pages/home_page.dart';
 
 class AddNewTask extends StatefulWidget {
   const AddNewTask({super.key});
@@ -86,7 +87,7 @@ class _AddNewTaskState extends State<AddNewTask> {
               ..showSnackBar(
                 const SnackBar(content: Text("Task added successfully!")),
               );
-            Navigator.of(context).pop();
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>HomePage()), (_)=> false);
           }
         },
         builder: (context, state) {

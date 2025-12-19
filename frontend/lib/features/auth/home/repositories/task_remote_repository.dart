@@ -11,30 +11,54 @@ class TaskRemoteRepository {
     required DateTime dueAt,
     required String token,
   }) async {
-    final res = await http.post(
-      Uri.parse("${Constants.backendUrl}/tasks"),
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-token': token, // verify backend expects this
-      },
-      body: jsonEncode({
-        'title': title,
-        'describtion': description,
-        'hexColor': hexColor,
-        'dueAt': dueAt.toIso8601String(),
-      }),
-    );
+    try {
+      final res = await http.post(
+        Uri.parse("${Constants.backendUrl}/tasks"),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token, // verify backend expects this
+        },
+        body: jsonEncode({
+          'title': title,
+          'description': description,
+          'hexColor': hexColor,
+          'dueAt': dueAt.toIso8601String(),
+        }),
+      );
 
-    // 🔍 DEBUG PRINT (VERY IMPORTANT)
-    print('STATUS CODE: ${res.statusCode}');
-    print('RESPONSE BODY: ${res.body}');
+      if (res.statusCode != 201) {
+        throw jsonDecode(res.body)['error'];
+      }
 
-    if (res.statusCode != 201) {
-      final error = jsonDecode(res.body);
-      throw error['error'] ?? 'Something went wrong';
+      return TaskModel.fromJson(res.body);
+    } catch (e) {
+      rethrow;
     }
+  }
 
-    final data = jsonDecode(res.body);
-    return TaskModel.fromJson(data);
+ Future<List<TaskModel>> getTask({required String token}) async {
+    try {
+      final res = await http.get(
+        Uri.parse("${Constants.backendUrl}/tasks"),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token, // verify backend expects this
+        },
+      );
+
+      if (res.statusCode != 200) {
+        throw jsonDecode(res.body)['error'];
+      }
+      final listOfTasks = jsonDecode(res.body);
+
+      List<TaskModel> taskList = [];
+
+      for(var elem in listOfTasks){
+        taskList.add(TaskModel.fromMap(elem));
+      }
+      return taskList;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

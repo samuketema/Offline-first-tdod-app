@@ -7,44 +7,51 @@ import { eq } from "drizzle-orm";
 
 const taskRouter = Router();
 
-taskRouter.post("/",auth,async (req: AuthRequest,res)=>{
-    try {
-        req.body = {...req.body ,dueAt: new Date(req.body.dueAt), uid:req.user};
-        const newTask: NewTask = req    .body;
-        const [task] = await db.insert(tasks).values(newTask).returning();
-        res.status(201).json(task);
-    } catch (e) {
-        res.status(500).json({error:e});
-
+taskRouter.post("/", auth, async (req: AuthRequest, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
+    req.body = {
+      ...req.body,
+      uid: req.user.id,
+      // ensure dueAt is always a Date object if provided
+      dueAt: req.body.dueAt ? new Date(req.body.dueAt) : undefined,
+    };
+
+    const newTask: NewTask = req.body;
+    console.log("UID SENT TO DB:", newTask.uid);
+
+    const [task] = await db.insert(tasks).values(newTask).returning();
+    res.status(201).json(task);
+  } catch (e: any) {
+    console.error("ERROR:", e);
+    return res.status(500).json({ message: e.message });
+  }
+
 });
 
-taskRouter.get("/", async (req: AuthRequest, res) => {
+taskRouter.get("/",auth, async (req: AuthRequest, res) => {
   try {
-  const allTasks = await db.select().from(tasks).where(eq(tasks.uid, req.user!.id));
-
+    const allTasks = await db.select().from(tasks).where(eq(tasks.uid, req.user!.id));
+    res.json(allTasks);
   } catch (e) {
     console.error("Error fetching tasks:", e);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-taskRouter.delete("/:id", async (req: AuthRequest, res) => {
+taskRouter.delete("/", auth, async (req: AuthRequest, res) => {
   try {
-  const { taskId } = req.body as { taskId: string };
+    const {taskId}: {taskId:string} = req.body; // ✅ UUID string
+    if (!taskId) return res.status(400).json({ error: "Invalid task ID" });
 
+    await db.delete(tasks).where(eq(tasks.id, taskId)); // ✅ old-style delete
 
-     await db
-      .delete(tasks)
-      .where(
-        eq(tasks.id, taskId) // task id
-      );
-
-    // optional: check ownership
-res.json(true);
-  } catch (e) { 
-    console.log(e);
-    res.status(500).json({ error: e });
+    res.json(true);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: e instanceof Error ? e.message : e });
   }
 });
 
