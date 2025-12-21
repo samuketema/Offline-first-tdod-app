@@ -12,7 +12,7 @@ taskRouter.post("/", auth, async (req: AuthRequest, res) => {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    req.body = {
+    req.body = { 
       ...req.body,
       uid: req.user.id,
       // ensure dueAt is always a Date object if provided
