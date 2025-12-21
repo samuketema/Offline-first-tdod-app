@@ -1,16 +1,17 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:taskapp/models/task_model.dart';
 import 'package:taskapp/models/user_model.dart';
 
 class AuthLocalRepository {
-  final String tableName = 'users';
+  final String tableName = 'tasks';
   
   Database? _dataBase;
   
   // Initialize DB
   Future<Database> _initDb() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'auth.db');
+    final path = join(dbPath, 'tasks.db');
     return openDatabase(
       path,
       version: 1,
@@ -18,12 +19,13 @@ class AuthLocalRepository {
         await db.execute('''
           CREATE TABLE $tableName (
             id Text PRIMARY KEY,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            token TEXT,
-            createdAt INTEGER,
-            updatedAt INTEGER   
+            title TEXT NOT NULL,
+            description TEXT NOT NULL,
+            uid TEXT NOT NULL,
+            dueAt INT NOT NULL,
+            color Text NOT NULL,
+            createdAt INTEGER NOT NULL,
+            updatedAt INTEGER NOT NULL  
           )
         ''');
       },
@@ -38,20 +40,28 @@ class AuthLocalRepository {
   }
 
   // Insert user
-  Future<void> insertUser(UserModel user) async {
+  Future<void> insertTask(List<TaskModel> tasks) async {
     final db = await database;
-     await db.insert(tableName, user.toMap(),
+    final batch = db.batch();
+    for (var task in tasks) {
+       batch.insert(tableName, task.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+await batch.commit(noResult: true);
   }
 
   // Get all users
-  Future<UserModel?> getUser() async {
+  Future<List<TaskModel>> getTasks() async {
     final db = await database;
-    final result = await db.query(tableName, limit: 1);
+    final result = await db.query(tableName);
     if (result.isNotEmpty) {
-      return UserModel.fromMap(result.first);
+      List<TaskModel> tasks = [];
+      for (final element in result) {
+        tasks.add( TaskModel.fromMap(result.first));
+      }
+      return tasks;
     }
-     return null;
+     return [];
   }
 
   // Get single user by email
