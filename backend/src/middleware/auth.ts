@@ -1,40 +1,54 @@
-import { Request, Response, NextFunction } from "express";
+import { UUID } from "crypto";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { db } from "../db";
 import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 export interface AuthRequest extends Request {
-  user?: { id: string; email?: string };
+  user?: UUID;
   token?: string;
 }
 
-export const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const auth = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
+    // get the header
     const token = req.header("x-auth-token");
+
     if (!token) {
-      return res.status(401).json({ error: "No token provided" });
+      res.status(401).json({ error: "No auth token, access denied!" });
+      return;
     }
 
-    // Verify token
-    const verifiedToken = jwt.verify(token, "passwordKey") as { id: string; email?: string };
-    if (!verifiedToken) {
-      return res.status(401).json({ error: "Invalid token" });
+    // verify if the token is valid
+    const verified = jwt.verify(token, "passwordKey");
+
+    if (!verified) {
+      res.status(401).json({ error: "Token verification failed!" });
+      return;
     }
 
-    // Check user exists in DB
-    const [user] = await db.select().from(users).where(eq(users.id, verifiedToken.id));
+    // get the user data if the token is valid
+    const verifiedToken = verified as { id: UUID };
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, verifiedToken.id));
+
     if (!user) {
-      return res.status(401).json({ error: "User not found" });
+      res.status(401).json({ error: "User not found!" });
+      return;
     }
 
-    // Attach decoded user info to request
-    req.user = { id: user.id, email: user.email };
+    req.user = verifiedToken.id;
     req.token = token;
-
     next();
-  } catch (error) {
-    console.error("Auth error:", error);
-    return res.status(401).json({ error: "Token verification failed" });
+  } catch (e) {
+    res.status(500).json({ error: e });
   }
 };
