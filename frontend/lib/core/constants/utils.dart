@@ -8,24 +8,18 @@ Color strengthenColor(Color color, double factor) {
   return Color.fromARGB(color.alpha, r, g, b);
 }
 
-List<DateTime> generateWeekDate(int weekOffset) {
-  DateTime today = DateTime.now();
-  DateTime startOfWeek = today.subtract(Duration(days: today.weekday));
+List<DateTime> generateWeekDates(int weekOffset) {
+  final today = DateTime.now();
+  DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1));
   startOfWeek = startOfWeek.add(Duration(days: weekOffset * 7));
+
   return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
 }
 
 String rgbToHex(Color color) {
-  return '#'
-      '${color.red.toRadixString(16).padLeft(2, '0')}'
-      '${color.green.toRadixString(16).padLeft(2, '0')}'
-      '${color.blue.toRadixString(16).padLeft(2, '0')}'
-      .toUpperCase();
+  return '${color.red.toRadixString(16).padLeft(2, '0')}${color.green.toRadixString(16).padLeft(2, '0')}${color.blue.toRadixString(16).padLeft(2, '0')}';
 }
 
 Color hexToRgb(String hex) {
-  // ✅ REMOVE #
-  hex = hex.replaceFirst('#', '');
-
   return Color(int.parse(hex, radix: 16) + 0xFF000000);
 }
