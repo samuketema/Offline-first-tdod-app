@@ -1,12 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SpService {
-  void setToken (String token)async{
+  Future<void> setToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString("x-auth-token", token);
-  } 
+    prefs.setString('x-auth-token', token);
+  }
 
-  Future<String?> getToken( )async{
+  Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('x-auth-token');
   }
