@@ -1,10 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/features/auth/cubit/auth_cubit.dart';
+import 'package:frontend/features/auth/pages/login_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:taskapp/features/auth/cubit/auth_cubit.dart';
-import 'package:taskapp/features/auth/pages/login_page.dart';
 
 class SignupPage extends StatefulWidget {
+  static MaterialPageRoute route() => MaterialPageRoute(
+        builder: (context) => const SignupPage(),
+      );
   const SignupPage({super.key});
 
   @override
@@ -12,117 +14,148 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final emailcontroller = TextEditingController();
-  final passwordcontroller = TextEditingController();
-  final namecontroller = TextEditingController();
-  final formkey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
 
   void signUpUser() {
-    if (formkey.currentState!.validate()) {
+    if (formKey.currentState!.validate()) {
       context.read<AuthCubit>().signUp(
-        name: namecontroller.text.trim(),
-        email: emailcontroller.text.trim(),
-        password: passwordcontroller.text.trim(),
-      );
+            name: nameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
-          if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
-          }else if(state is AuthSignUp){
-             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Acccount is created')));
-          }
-        },
-        builder: (context, state) {
-          if (state is AuthUserLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: formkey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Sign Up. ",
-                    style: TextStyle(fontSize: 55, fontWeight: FontWeight.bold),
+        body: BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+            ),
+          );
+        } else if (state is AuthSignUp) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Account created! Login NOW!"),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is AuthLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Sign Up.",
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(height: 30),
-                  TextFormField(
-                    controller: namecontroller,
-                    decoration: InputDecoration(hintText: "Name"),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Name field can not be empty";
-                      }
-                    },
+                ),
+                const SizedBox(height: 30),
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Name',
                   ),
-                  SizedBox(height: 15),
-                  TextFormField(
-                    controller: emailcontroller,
-                    decoration: InputDecoration(hintText: "Email"),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Name field can not be empty";
-                      }
-                      return null;
-                    },
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Name field cannot be empty!";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
                   ),
-                  SizedBox(height: 15),
-                  TextFormField(
-                    controller: passwordcontroller,
-                    decoration: InputDecoration(hintText: "Password"),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "Name field can not be empty";
-                      }
-                      return null;
-                    },
+                  validator: (value) {
+                    if (value == null ||
+                        value.trim().isEmpty ||
+                        !value.trim().contains("@")) {
+                      return "Email field is invalid!";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: passwordController,
+                  decoration: const InputDecoration(
+                    hintText: 'Password',
                   ),
-                  SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: signUpUser,
-                    child: Text(
-                      "Sign Up.",
-                      style: TextStyle(fontSize: 15, color: Colors.white),
+                  validator: (value) {
+                    if (value == null ||
+                        value.trim().isEmpty ||
+                        value.trim().length <= 6) {
+                      return "Password field is invalid!";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: signUpUser,
+                  child: const Text(
+                    'SIGN UP',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 15),
-                  RichText(
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(LoginPage.route());
+                  },
+                  child: RichText(
                     text: TextSpan(
-                      text: "Don't have an account? ",
+                      text: 'Already have an account? ',
                       style: Theme.of(context).textTheme.titleMedium,
-                      children: [
+                      children: const [
                         TextSpan(
-                          text: 'Sign Up.',
-                          style: TextStyle(color: Colors.blue),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              // Navigate back to signup
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => LoginPage(),
-                                ),
-                              );
-                            },
+                          text: 'Sign In',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        },
-      ),
-    );
+          ),
+        );
+      },
+    ));
   }
 }
