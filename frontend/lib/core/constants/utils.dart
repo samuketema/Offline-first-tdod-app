@@ -21,5 +21,12 @@ String rgbToHex(Color color) {
 }
 
 Color hexToRgb(String hex) {
-  return Color(int.parse(hex, radix: 16) + 0xFF000000);
+  hex = hex.replaceAll('#', '').replaceAll('0x', '');
+
+  if (hex.length == 6) {
+    hex = 'FF$hex'; // add alpha if missing
+  }
+
+  return Color(int.parse(hex, radix: 16));
 }
+
