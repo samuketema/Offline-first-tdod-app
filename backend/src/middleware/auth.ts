@@ -1,9 +1,9 @@
 import { UUID } from "crypto";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { users } from "../db/schema";
-import { eq } from "drizzle-orm";
 
 export interface AuthRequest extends Request {
   user?: UUID;
