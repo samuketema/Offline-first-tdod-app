@@ -29,4 +29,3 @@ Color hexToRgb(String hex) {
 
   return Color(int.parse(hex, radix: 16));
 }
-
