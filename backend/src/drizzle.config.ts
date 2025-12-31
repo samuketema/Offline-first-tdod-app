@@ -5,11 +5,11 @@ export default defineConfig({
   schema: "./db/schema.ts",
   out: "./drizzle",
   dbCredentials: {
-    host: "localhost",          // Docker service name
+    host: "localhost",
     port: 5432,
-    user: "postgres",
-    password: "postgres", // <-- your password here
     database: "mydb",
-    ssl:false,
+    user: "postgres",
+    password: "test123",
+    ssl: false,
   },
 });
