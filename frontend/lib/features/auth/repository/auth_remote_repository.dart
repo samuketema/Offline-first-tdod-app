@@ -17,17 +17,9 @@ class AuthRemoteRepository {
   }) async {
     try {
       final res = await http.post(
-        Uri.parse(
-          '${Constants.backendUri}/auth/signup',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'password': password,
-        }),
+        Uri.parse('${Constants.backendUri}/auth/signup'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
 
       if (res.statusCode != 201) {
@@ -46,16 +38,9 @@ class AuthRemoteRepository {
   }) async {
     try {
       final res = await http.post(
-        Uri.parse(
-          '${Constants.backendUri}/auth/login',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+        Uri.parse('${Constants.backendUri}/auth/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
       if (res.statusCode != 200) {
@@ -76,13 +61,8 @@ class AuthRemoteRepository {
       }
 
       final res = await http.post(
-        Uri.parse(
-          '${Constants.backendUri}/auth/tokenIsValid',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
+        Uri.parse('${Constants.backendUri}/auth/tokenIsValid'),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
       );
 
       if (res.statusCode != 200 || jsonDecode(res.body) == false) {
@@ -90,13 +70,8 @@ class AuthRemoteRepository {
       }
 
       final userResponse = await http.get(
-        Uri.parse(
-          '${Constants.backendUri}/auth',
-        ),
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
+        Uri.parse('${Constants.backendUri}/auth'),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
       );
 
       if (userResponse.statusCode != 200) {
