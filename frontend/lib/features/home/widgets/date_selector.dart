@@ -25,9 +25,9 @@ class _DateSelectorState extends State<DateSelector> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(
-            bottom: 10,
-          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ).copyWith(bottom: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -66,7 +66,8 @@ class _DateSelectorState extends State<DateSelector> {
               itemCount: weekDates.length,
               itemBuilder: (context, index) {
                 final date = weekDates[index];
-                bool isSelected = DateFormat('d').format(widget.selectedDate) ==
+                bool isSelected =
+                    DateFormat('d').format(widget.selectedDate) ==
                         DateFormat('d').format(date) &&
                     widget.selectedDate.month == date.month &&
                     widget.selectedDate.year == date.year;
