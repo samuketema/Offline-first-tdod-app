@@ -57,7 +57,9 @@ class TasksCubit extends Cubit<TasksState> {
 
     // talk to our postgresql db to add the new task
     final isSynced = await taskRemoteRepository.syncTasks(
-        token: token, tasks: unsyncedTasks);
+      token: token,
+      tasks: unsyncedTasks,
+    );
     // change the tasks that were added to the db from 0 to 1
     if (isSynced) {
       print("synced done");
