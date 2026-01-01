@@ -23,9 +23,7 @@ class AuthLocalRepository {
       version: 2,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < newVersion) {
-          await db.execute(
-            'DROP TABLE $tableName',
-          );
+          await db.execute('DROP TABLE $tableName');
           db.execute('''
           CREATE TABLE $tableName(
             id TEXT PRIMARY KEY,
