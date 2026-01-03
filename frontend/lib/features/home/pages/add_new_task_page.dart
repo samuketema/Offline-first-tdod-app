@@ -7,9 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddNewTaskPage extends StatefulWidget {
-  static MaterialPageRoute route() => MaterialPageRoute(
-        builder: (context) => const AddNewTaskPage(),
-      );
+  static MaterialPageRoute route() =>
+      MaterialPageRoute(builder: (context) => const AddNewTaskPage());
   const AddNewTaskPage({super.key});
 
   @override
@@ -27,13 +26,13 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
     if (formKey.currentState!.validate()) {
       AuthLoggedIn user = context.read<AuthCubit>().state as AuthLoggedIn;
       await context.read<TasksCubit>().createNewTask(
-            uid: user.user.id,
-            title: titleController.text.trim(),
-            description: descriptionController.text.trim(),
-            color: selectedColor,
-            token: user.user.token,
-            dueAt: selectedDate,
-          );
+        uid: user.user.id,
+        title: titleController.text.trim(),
+        description: descriptionController.text.trim(),
+        color: selectedColor,
+        token: user.user.token,
+        dueAt: selectedDate,
+      );
     }
   }
 
@@ -55,9 +54,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
               final _selectedDate = await showDatePicker(
                 context: context,
                 firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(
-                  const Duration(days: 90),
-                ),
+                lastDate: DateTime.now().add(const Duration(days: 90)),
               );
 
               if (_selectedDate != null) {
@@ -68,32 +65,31 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                DateFormat("MM-d-y").format(selectedDate),
-              ),
+              child: Text(DateFormat("MM-d-y").format(selectedDate)),
             ),
-          )
+          ),
         ],
       ),
       body: BlocConsumer<TasksCubit, TasksState>(
         listener: (context, state) {
           if (state is TasksError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           } else if (state is AddNewTaskSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Task added successfully!")),
             );
             Navigator.pushAndRemoveUntil(
-                context, HomePage.route(), (_) => false);
+              context,
+              HomePage.route(),
+              (_) => false,
+            );
           }
         },
         builder: (context, state) {
           if (state is TasksLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           return Padding(
@@ -104,9 +100,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                 children: [
                   TextFormField(
                     controller: titleController,
-                    decoration: const InputDecoration(
-                      hintText: 'Title',
-                    ),
+                    decoration: const InputDecoration(hintText: 'Title'),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return "Title cannot be empty";
@@ -117,9 +111,7 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                   const SizedBox(height: 10),
                   TextFormField(
                     controller: descriptionController,
-                    decoration: const InputDecoration(
-                      hintText: 'Description',
-                    ),
+                    decoration: const InputDecoration(hintText: 'Description'),
                     maxLines: 4,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -138,19 +130,14 @@ class _AddNewTaskPageState extends State<AddNewTaskPage> {
                       });
                     },
                     color: selectedColor,
-                    pickersEnabled: const {
-                      ColorPickerType.wheel: true,
-                    },
+                    pickersEnabled: const {ColorPickerType.wheel: true},
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: createNewTask,
                     child: const Text(
                       'SUBMIT',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ],
