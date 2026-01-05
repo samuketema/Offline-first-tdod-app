@@ -19,19 +19,16 @@ class TaskRemoteRepository {
     required DateTime dueAt,
   }) async {
     try {
-      final res = await http.post(Uri.parse("${Constants.backendUri}/tasks"),
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-          body: jsonEncode(
-            {
-              'title': title,
-              'description': description,
-              'hexColor': hexColor,
-              'dueAt': dueAt.toIso8601String(),
-            },
-          ));
+      final res = await http.post(
+        Uri.parse("${Constants.backendUri}/tasks"),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+        body: jsonEncode({
+          'title': title,
+          'description': description,
+          'hexColor': hexColor,
+          'dueAt': dueAt.toIso8601String(),
+        }),
+      );
 
       if (res.statusCode != 201) {
         throw jsonDecode(res.body)['error'];
@@ -63,10 +60,7 @@ class TaskRemoteRepository {
     try {
       final res = await http.get(
         Uri.parse("${Constants.backendUri}/tasks"),
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
       );
 
       if (res.statusCode != 200) {
@@ -103,10 +97,7 @@ class TaskRemoteRepository {
       }
       final res = await http.post(
         Uri.parse("${Constants.backendUri}/tasks/sync"),
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
         body: jsonEncode(taskListInMap),
       );
 
